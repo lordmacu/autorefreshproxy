@@ -7,6 +7,9 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'dart:async';
 import 'package:wakelock/wakelock.dart';
 import 'dart:collection';
+
+import 'package:toast/toast.dart';
+
 // import 'dart:convert';
 import 'dart:io';
 void main() {
@@ -43,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Timer _timerForInter;
   InAppWebViewController webViewController;
   int counter=0;
+  String from;
 
   InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
       crossPlatform: InAppWebViewOptions(
@@ -131,16 +135,33 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: InAppWebView(
-       // initialOptions: options,
+      body: Column(
+        children: [
 
-        initialUrl: "https://www.dextools.io/app/uniswap/pair-explorer/0x6a0d8a35cda1f0d3534a346394661ed02e9a4072",
+          Expanded(child: InAppWebView(
+            // initialOptions: options,
+
+            initialUrl: "https://www.dextools.io/app/uniswap/pair-explorer/0x6a0d8a35cda1f0d3534a346394661ed02e9a4072",
 
 
-        onWebViewCreated: (controller) {
-          webViewController=controller;
+            onWebViewCreated: (controller) {
+              webViewController=controller;
 
-        },
+            },
+            onPageCommitVisible: (controller,url) {
+              Toast.show("Commit: ${url}", context, duration: Toast.LENGTH_LONG, gravity:  Toast.TOP);
+            },
+            onLoadStop: (controller,url) {
+              Toast.show("LoadStop: ${url}", context, duration: Toast.LENGTH_LONG, gravity:  Toast.TOP);
+            },
+
+            onUpdateVisitedHistory: (controller,url,android) {
+              Toast.show("From: ${url}", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
+
+            },
+
+          ))
+        ],
       )
     );
   }
