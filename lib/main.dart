@@ -9,6 +9,7 @@ import 'package:wakelock/wakelock.dart';
 import 'dart:collection';
 
 import 'package:toast/toast.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
 // import 'dart:convert';
 import 'dart:io';
@@ -49,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int counter=0;
   String from;
 
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 33;
 
 
   InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
@@ -127,6 +129,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     print("este es ----  crockproxy");
 
+    setState(() {
+      endTime=DateTime.now().millisecondsSinceEpoch + 1000 * 33;
+    });
+
   }
 
 
@@ -173,7 +179,23 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
+          Container(
 
+              padding: EdgeInsets.only(right: 20.0,top: 5,bottom: 5),
+              child:  CountdownTimer(
+                endTime: endTime,
+
+                textStyle: TextStyle(color: Colors.redAccent),
+                widgetBuilder: (_, time) {
+                  if (time == null) {
+                    return Text('0');
+                  }
+                  return Text(
+                      'AutoRefresh in: ${time.sec}',style: TextStyle(fontSize: 16),);
+                },
+
+              )
+          ),
           Expanded(child: InAppWebView(
             initialOptions: options,
 
