@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Social Refresher'),
+      home: MyHomePage(title: 'BankSocial Refresh'),
     );
   }
 }
@@ -44,21 +44,27 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   Timer _timerForInter;
+  Timer _timerForInterTwo;
   InAppWebViewController webViewController;
   int counter=0;
   String from;
 
+
+
   InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
       crossPlatform: InAppWebViewOptions(
-        useShouldOverrideUrlLoading: true,
-        mediaPlaybackRequiresUserGesture: false,
+
 
       ),
       android: AndroidInAppWebViewOptions(
-        geolocationEnabled: false,
+        geolocationEnabled: true,
         hardwareAcceleration: true,
 
         clearSessionCache: true,
+        cacheMode: AndroidCacheMode.LOAD_NO_CACHE,
+        loadWithOverviewMode: true,
+        thirdPartyCookiesEnabled: false,
+
 
 
       ),
@@ -73,26 +79,30 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
 
     Wakelock.enable();
-    _timerForInter = Timer.periodic(Duration(seconds: 25), (result) {
+    _timerForInter = Timer.periodic(Duration(seconds: 30), (result) {
       crockProxy();
 
     });
+
+
     super.initState();
   }
 
 
   proxyscrape(){
-    String url="https://proxyscrape.com/web-proxy/proxyrequest";
+    String url="https://www.croxyproxy.com/_es/servers";
 
     var random = new Random();
 
     randomNumber=random.nextInt(100);
     setState(() {
-      tempUrl="${url}";
+      tempUrl="${url}?rand=${randomNumber}";
     });
 
-    var postData = Uint8List.fromList(utf8.encode("url=https://www.dextools.io/app/uniswap/pair-explorer/0x6a0d8a35cda1f0d3534a346394661ed02e9a4072"));
-    webViewController.postUrl(url:url, postData: postData);
+
+    var postData = Uint8List.fromList(utf8.encode("url=https://www.top10vpn.com/tools/what-is-my-ip/"));
+    //var postData = Uint8List.fromList(utf8.encode("url=https://www.dextools.io/app/uniswap/pair-explorer/0x6a0d8a35cda1f0d3534a346394661ed02e9a4072"));
+    webViewController.postUrl(url:tempUrl, postData: postData);
     counter=counter+1;
 
     print("este es ---- proxyscrepe");
@@ -111,6 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     var postData = Uint8List.fromList(utf8.encode("url=https://www.dextools.io/app/uniswap/pair-explorer/0x6a0d8a35cda1f0d3534a346394661ed02e9a4072"));
+
     webViewController.postUrl(url:tempUrl, postData: postData);
     counter=counter+1;
 
@@ -123,9 +134,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     // Add these to dispose to cancel timer when user leaves the app
     _timerForInter.cancel();
+    _timerForInterTwo.cancel();
 
     super.dispose();
   }
+
 
 
   @override
@@ -133,13 +146,36 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        backgroundColor: Colors.white,
+        title: Text(widget.title,style: TextStyle(color: Color(0xff111f39)),),
+        actions: <Widget>[
+
+
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  _timerForInter.cancel();
+                  _timerForInterTwo.cancel();
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyHomePage(title:  'BankSocial Refresh',)),
+                  );
+
+                },
+                child: Icon(
+                  Icons.refresh,color:  Color(0xff111f39),
+                ),
+              )
+          ),
+        ],
       ),
       body: Column(
         children: [
 
           Expanded(child: InAppWebView(
-            // initialOptions: options,
+            initialOptions: options,
 
             initialUrl: "https://www.dextools.io/app/uniswap/pair-explorer/0x6a0d8a35cda1f0d3534a346394661ed02e9a4072",
 
@@ -153,6 +189,8 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             onLoadStop: (controller,url) {
               Toast.show("LoadStop: ${url}", context, duration: Toast.LENGTH_LONG, gravity:  Toast.TOP);
+
+
             },
 
             onUpdateVisitedHistory: (controller,url,android) {
